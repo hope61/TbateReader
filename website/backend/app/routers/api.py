@@ -47,7 +47,7 @@ def get_base_url(request: Request):
     if ':8000' not in base_url:
         base_url = base_url.replace(':5173', ':8000')  # Replace Vite dev server port
         # Only add port if local_ip is in the URL and no port is specified
-        if local_ip in base_url and ':8000' not in base_url and ':5173' not in base_url:
+        if local_ip in base_url and ':8000' not in base_url:
             base_url = base_url.replace(local_ip, f'{local_ip}:8000')
     
     return base_url
