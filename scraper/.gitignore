@@ -1,0 +1,6 @@
+chapter_downloader.log
+chapter_processor.log
+/src/__pycache__
+ebook2audiobook
+.mypy_cache
+chapters

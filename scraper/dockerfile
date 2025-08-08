@@ -1,0 +1,41 @@
+# Use CUDA 11.8 base image for better Windows compatibility
+FROM pytorch/pytorch:2.1.2-cuda11.8-cudnn8-runtime
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    TORTOISE_MODELS_DIR=/app/models \
+    TEMP_DIR=/app/temp_audio \
+    LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH \
+    CUDA_VISIBLE_DEVICES=0 \
+    TF_FORCE_GPU_ALLOW_GROWTH=true \
+    PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:32
+
+# Install essential Windows-compatible dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create application directories
+RUN mkdir -p /app/chapters/text \
+    && mkdir -p /app/chapters/audio \
+    && mkdir -p /app/temp_audio \
+    && mkdir -p /app/src
+
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set working directory
+WORKDIR /app
+
+# Copy application files
+COPY main.py .
+COPY src ./src
+
+# Clean up Torch cache
+RUN rm -rf /root/.cache/torch
+
+# Set entrypoint
+ENTRYPOINT ["python", "main.py"]

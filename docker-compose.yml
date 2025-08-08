@@ -1,0 +1,51 @@
+services:
+  frontend:
+    build:
+      context: ./website/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=production
+    networks:
+      - tbate-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./website/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./website/backend/novels:/app/novels:ro
+      - ./website/backend/images:/app/images:ro
+      - backend-data:/app
+    environment:
+      - ENVIRONMENT=development
+      - CORS_ORIGINS=http://localhost:3000,http://frontend:80
+      - ENABLE_DOCS=true
+    networks:
+      - tbate-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import requests; requests.get('http://localhost:8000/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  backend-data:
+
+networks:
+  tbate-network:
+    driver: bridge

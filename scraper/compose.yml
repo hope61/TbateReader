@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  chapter-processor:
+    build: .
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]  # ADD THIS LINE
+        limits:
+          memory: 8G
+    volumes:
+      - ./chapters:/app/chapters
+      - ./models:/app/models
+    stdin_open: true
+    tty: true

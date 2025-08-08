@@ -1,0 +1,67 @@
+services:
+  frontend:
+    build:
+      context: ./website/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=production
+    networks:
+      - tbate-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:80/",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  backend:
+    build:
+      context: ./website/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./website/backend/novels:/app/novels:ro
+      - ./website/backend/images:/app/images:ro
+      - backend-data:/app
+    environment:
+      - ENVIRONMENT=production
+      - CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+      - ENABLE_DOCS=true
+      - DOMAIN=yourdomain.com
+    networks:
+      - tbate-network
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import requests; requests.get('http://localhost:8000/health')",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  backend-data:
+
+networks:
+  tbate-network:
+    driver: bridge
