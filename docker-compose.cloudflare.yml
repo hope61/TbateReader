@@ -6,8 +6,7 @@ services:
     ports:
       - "3001:80"
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     environment:
       - NODE_ENV=production
       - VITE_API_BASE_URL=https://manaapi.dicki.org
@@ -47,12 +46,6 @@ services:
     networks:
       - tbate-network
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
 volumes:
   backend-data:
