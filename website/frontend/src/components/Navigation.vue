@@ -2,13 +2,17 @@
   <nav class="navbar navbar-expand-lg">
     <div class="container">
       <router-link class="navbar-brand d-flex align-items-center" to="/">
-        <img
-          src="../assets/minicaera.png"
-          class="logo me-2"
-          width="40"
-          height="40"
-          alt="Mana's Embrace Logo"
-        />
+        <picture>
+          <source srcset="../assets/minicaera.webp" type="image/webp">
+          <img
+            src="../assets/minicaera.png"
+            class="logo me-2"
+            width="40"
+            height="40"
+            alt="Mana's Embrace Logo"
+            loading="eager"
+          />
+        </picture>
         <span class="brand-text">Mana's Embrace</span>
       </router-link>
 

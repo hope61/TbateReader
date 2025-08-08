@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://mana.dicki.org/sitemap.xml
+
+# Allow search engines to crawl all content
+Allow: /novels/
+Allow: /novels/*/chapters/
+
+# Block API endpoints from being crawled
+Disallow: /api/
+
+# Common blocked paths (if they exist)
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*.xml$ 
+Allow: /sitemap.xml
+
+# Crawl delay (optional - removes this if you want faster crawling)
+# Crawl-delay: 1

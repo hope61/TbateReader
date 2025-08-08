@@ -450,10 +450,15 @@ a:hover {
   left: 0;
   right: 0;
   bottom: 0;
+  /* Use WebP with fallback to optimized JPEG */
+  background: url("./assets/heroimage.webp") center/cover;
   background: url("./assets/heroimage.jpeg") center/cover;
   opacity: 0.2;
   z-index: -1;
   filter: blur(1px);
+  /* Improve performance */
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .hero::after {
