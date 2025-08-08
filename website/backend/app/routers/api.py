@@ -59,10 +59,11 @@ def get_novel(
     novel = db.query(models.Novel).filter(models.Novel.id == novel_id).first()
     if not novel:
         raise HTTPException(status_code=404, detail="Novel not found")
-    base_url = get_base_url(request)
-    if novel.image_url:
-        relative_url = novel.image_url.lstrip('/')
-        novel.image_url = f"{base_url}/{relative_url}"
+    # Temporarily disable image URL modification to debug
+    # base_url = get_base_url(request)
+    # if novel.image_url:
+    #     relative_url = novel.image_url.lstrip('/')
+    #     novel.image_url = f"{base_url}/{relative_url}"
     return novel
 
 @router.get("/novels/{novel_id}/chapters")
