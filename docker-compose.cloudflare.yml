@@ -39,10 +39,10 @@ services:
       - ./website/backend/images:/app/images:ro
       - backend-data:/app
     environment:
-      - ENVIRONMENT=production
-      - CORS_ORIGINS=https://mana.dicki.org,https://www.mana.dicki.org
-      - ENABLE_DOCS=false
-      - DOMAIN=mana.dicki.org
+      - ENVIRONMENT=development
+      - CORS_ORIGINS=http://localhost:3001,http://172.30.0.1:3001,https://mana.dicki.org,https://www.mana.dicki.org
+      - ENABLE_DOCS=true
+      - DOMAIN=localhost
     networks:
       - tbate-network
     restart: unless-stopped
