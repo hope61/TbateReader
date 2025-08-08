@@ -10,6 +10,7 @@ services:
         condition: service_healthy
     environment:
       - NODE_ENV=production
+      - VITE_API_BASE_URL=https://manaapi.dicki.org
     networks:
       - tbate-network
     restart: unless-stopped
@@ -40,9 +41,9 @@ services:
       - backend-data:/app
     environment:
       - ENVIRONMENT=production
-      - CORS_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
-      - ENABLE_DOCS=true
-      - DOMAIN=yourdomain.com
+      - CORS_ORIGINS=https://mana.dicki.org,https://www.mana.dicki.org
+      - ENABLE_DOCS=false
+      - DOMAIN=mana.dicki.org
     networks:
       - tbate-network
     restart: unless-stopped
