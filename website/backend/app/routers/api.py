@@ -33,22 +33,25 @@ def get_base_url(request: Request):
     if env_base_url:
         return env_base_url.rstrip('/')
     
-    # For mobile access, use local network IP instead of 127.0.0.1
+    # Get the base URL from the request
     base_url = str(request.base_url).rstrip('/')
+    
+    # For production/domain access, use the domain
+    if 'manaapi.dicki.org' in base_url:
+        return 'https://manaapi.dicki.org'
+    
+    # For local development, use local network IP
     local_ip = get_local_ip()
     
-    # Replace 127.0.0.1 with local network IP for mobile access
+    # Replace localhost/127.0.0.1 with local network IP
     if '127.0.0.1' in base_url:
         base_url = base_url.replace('127.0.0.1', local_ip)
     elif 'localhost' in base_url:
         base_url = base_url.replace('localhost', local_ip)
     
-    # Ensure we're using the correct port (8000 for backend)
-    if ':8000' not in base_url:
-        base_url = base_url.replace(':5173', ':8000')  # Replace Vite dev server port
-        # Only add port if local_ip is in the URL and no port is specified
-        if local_ip in base_url and ':8000' not in base_url:
-            base_url = base_url.replace(local_ip, f'{local_ip}:8000')
+    # Ensure correct port
+    if ':8000' not in base_url and local_ip in base_url:
+        base_url = f'{local_ip}:8000'
     
     return base_url
 
