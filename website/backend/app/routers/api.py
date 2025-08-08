@@ -35,13 +35,12 @@ def get_base_url(request: Request):
     
     # For mobile access, use local network IP instead of 127.0.0.1
     base_url = str(request.base_url).rstrip('/')
+    local_ip = get_local_ip()
     
     # Replace 127.0.0.1 with local network IP for mobile access
     if '127.0.0.1' in base_url:
-        local_ip = get_local_ip()
         base_url = base_url.replace('127.0.0.1', local_ip)
     elif 'localhost' in base_url:
-        local_ip = get_local_ip()
         base_url = base_url.replace('localhost', local_ip)
     
     # Ensure we're using the correct port (8000 for backend)
