@@ -25,38 +25,15 @@ def get_local_ip():
     except Exception:
         return "127.0.0.1"
 
-# Use environment variable or fallback to request.base_url
+# Simple function to get base URL for images
 def get_base_url(request: Request):
     """Get base URL for image URLs."""
-    # Check for environment variable first
-    env_base_url = os.getenv("API_BASE_URL")
-    if env_base_url:
-        return env_base_url.rstrip('/')
-    
-    # Get the base URL from the request
-    base_url = str(request.base_url).rstrip('/')
-    
     # For production/domain access, use the domain
-    if 'manaapi.dicki.org' in base_url:
+    if 'manaapi.dicki.org' in str(request.url):
         return 'https://manaapi.dicki.org'
     
-    # For local development, use local network IP
-    try:
-        local_ip = get_local_ip()
-        # Replace localhost/127.0.0.1 with local network IP
-        if '127.0.0.1' in base_url:
-            base_url = base_url.replace('127.0.0.1', local_ip)
-        elif 'localhost' in base_url:
-            base_url = base_url.replace('localhost', local_ip)
-        
-        # Ensure correct port
-        if ':8000' not in base_url and local_ip in base_url:
-            base_url = f'{local_ip}:8000'
-    except:
-        # If anything goes wrong, just return the original base_url
-        pass
-    
-    return base_url
+    # For local development, just use the request base URL
+    return str(request.base_url).rstrip('/')
 
 @router.get("/novels")
 @limiter.limit("100/minute")
