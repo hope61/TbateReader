@@ -41,20 +41,17 @@ def get_base_url(request: Request):
         return 'https://manaapi.dicki.org'
     
     # For local development, use local network IP
-    try:
-        local_ip = get_local_ip()
-        # Replace localhost/127.0.0.1 with local network IP
-        if '127.0.0.1' in base_url:
-            base_url = base_url.replace('127.0.0.1', local_ip)
-        elif 'localhost' in base_url:
-            base_url = base_url.replace('localhost', local_ip)
-        
-        # Ensure correct port
-        if ':8000' not in base_url and local_ip in base_url:
-            base_url = f'{local_ip}:8000'
-    except Exception:
-        # Fallback to original base_url if anything goes wrong
-        pass
+    local_ip = get_local_ip()
+    
+    # Replace localhost/127.0.0.1 with local network IP
+    if '127.0.0.1' in base_url:
+        base_url = base_url.replace('127.0.0.1', local_ip)
+    elif 'localhost' in base_url:
+        base_url = base_url.replace('localhost', local_ip)
+    
+    # Ensure correct port
+    if ':8000' not in base_url and local_ip in base_url:
+        base_url = f'{local_ip}:8000'
     
     return base_url
 
