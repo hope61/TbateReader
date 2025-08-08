@@ -40,11 +40,12 @@ def get_base_url(request: Request):
 def get_novels(request: Request, db: Session = Depends(get_db)):
     """List all novels."""
     novels = db.query(models.Novel).all()
-    base_url = get_base_url(request)
-    for novel in novels:
-        if novel.image_url:
-            relative_url = novel.image_url.lstrip('/')
-            novel.image_url = f"{base_url}/{relative_url}"
+    # Temporarily disable image URL modification to debug
+    # base_url = get_base_url(request)
+    # for novel in novels:
+    #     if novel.image_url:
+    #         relative_url = novel.image_url.lstrip('/')
+    #         novel.image_url = f"{base_url}/{relative_url}"
     return novels
 
 @router.get("/novels/{novel_id}")
