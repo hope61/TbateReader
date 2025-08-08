@@ -13,6 +13,11 @@ def health_check():
     """Health check endpoint for Docker."""
     return {"status": "healthy", "service": "tbate-reader-api"}
 
+@router.get("/test")
+def test_endpoint():
+    """Simple test endpoint."""
+    return {"message": "test works"}
+
 def get_local_ip():
     """Get the local network IP address."""
     try:
