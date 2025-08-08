@@ -9,7 +9,7 @@ services:
       - backend
     environment:
       - NODE_ENV=production
-      - VITE_API_BASE_URL=https://manaapi.dicki.org
+      - VITE_API_BASE_URL=http://localhost:8001
     networks:
       - tbate-network
     restart: unless-stopped
