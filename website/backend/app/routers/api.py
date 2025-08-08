@@ -20,41 +20,43 @@ def test_endpoint():
 
 def get_local_ip():
     """Get the local network IP address."""
+    local_ip = "127.0.0.1"
     try:
-        # Connect to a remote address to get the local IP
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
         local_ip = s.getsockname()[0]
-        s.close()
-        return local_ip
     except Exception:
-        return "127.0.0.1"
+        pass
+    finally:
+        try:
+            s.close()
+        except Exception:
+            pass
+    return local_ip
 
 # Simple function to get base URL for images
 def get_base_url(request: Request):
     """Get base URL for image URLs."""
-    # For production/domain access, use the domain
-    if 'manaapi.dicki.org' in str(request.url):
-        return 'https://manaapi.dicki.org'
-    
-    # For local development, just use the request base URL
-    return str(request.base_url).rstrip('/')
+    # Prefer explicit API domain in production
+    if os.getenv("ENVIRONMENT", "development") == "production":
+        return "https://manaapi.dicki.org"
+    # Fall back to request base URL in dev
+    return str(request.base_url).rstrip("/")
 
 @router.get("/novels")
 @limiter.limit("100/minute")
 def get_novels(request: Request, db: Session = Depends(get_db)):
     """List all novels."""
     novels = db.query(models.Novel).all()
-    # Temporarily disable image URL modification to debug
-    # base_url = get_base_url(request)
-    # for novel in novels:
-    #     if novel.image_url:
-    #         relative_url = novel.image_url.lstrip('/')
-    #         novel.image_url = f"{base_url}/{relative_url}"
+    base_url = get_base_url(request)
+    for novel in novels:
+        if novel.image_url:
+            relative_url = novel.image_url.lstrip('/')
+            novel.image_url = f"{base_url}/{relative_url}"
     return novels
 
 @router.get("/novels/{novel_id}")
-@limiter.limit("100/minute")
+# @limiter.limit("100/minute")
 def get_novel(
     request: Request,
     novel_id: int,
@@ -64,15 +66,14 @@ def get_novel(
     novel = db.query(models.Novel).filter(models.Novel.id == novel_id).first()
     if not novel:
         raise HTTPException(status_code=404, detail="Novel not found")
-    # Temporarily disable image URL modification to debug
-    # base_url = get_base_url(request)
-    # if novel.image_url:
-    #     relative_url = novel.image_url.lstrip('/')
-    #     novel.image_url = f"{base_url}/{relative_url}"
+    base_url = get_base_url(request)
+    if novel.image_url:
+        relative_url = novel.image_url.lstrip('/')
+        novel.image_url = f"{base_url}/{relative_url}"
     return novel
 
 @router.get("/novels/{novel_id}/chapters")
-@limiter.limit("100/minute")
+# @limiter.limit("100/minute")
 def get_novel_chapters(
     request: Request,
     novel_id: int,
@@ -91,7 +92,7 @@ def get_novel_chapters(
     ]
 
 @router.get("/novels/{novel_id}/chapters/{chapter_number}")
-@limiter.limit("100/minute")
+# @limiter.limit("100/minute")
 def get_chapter(
     request: Request,
     novel_id: int,

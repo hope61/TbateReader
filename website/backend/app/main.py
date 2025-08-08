@@ -46,14 +46,19 @@ app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Production-Only Middleware
 if os.getenv("ENVIRONMENT", "development") == "production":
-    app.add_middleware(HTTPSRedirectMiddleware)
+    # Skip HTTPS redirect for now to avoid complications behind Cloudflare/NGINX
+    # app.add_middleware(HTTPSRedirectMiddleware)
+    # Allow API and frontend domains, plus localhost for debugging
     app.add_middleware(
         TrustedHostMiddleware,
         allowed_hosts=[
-            os.getenv("DOMAIN", "localhost"),
+            "manaapi.dicki.org",
+            "mana.dicki.org",
+            "*.dicki.org",
+            "localhost",
             "127.0.0.1",
-            "0.0.0.0"
-        ]
+            "0.0.0.0",
+        ],
     )
 
 # Routers
@@ -88,22 +93,3 @@ def startup_event():
     finally:
         db.close()
 
-# Security Headers
-@app.middleware("http")
-async def add_security_headers(request, call_next):
-    response = await call_next(request)
-    if os.getenv("ENVIRONMENT", "development") == "production":
-        response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains"
-        response.headers["Content-Security-Policy"] = "default-src 'self'"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-XSS-Protection"] = "1; mode=block"
-    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    
-    # Cloudflare Tunnel headers
-    if "CF-Connecting-IP" in request.headers:
-        response.headers["X-Forwarded-For"] = request.headers["CF-Connecting-IP"]
-    if "CF-Ray" in request.headers:
-        response.headers["CF-Ray"] = request.headers["CF-Ray"]
-    
-    return response
