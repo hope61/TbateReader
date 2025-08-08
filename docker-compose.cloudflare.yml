@@ -4,7 +4,7 @@ services:
       context: ./website/frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "3001:80"
     depends_on:
       backend:
         condition: service_healthy
@@ -34,7 +34,7 @@ services:
       context: ./website/backend
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - ./website/backend/novels:/app/novels:ro
       - ./website/backend/images:/app/images:ro
