@@ -225,12 +225,13 @@ a:hover {
   backdrop-filter: blur(20px);
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-3xl);
-  padding: clamp(3rem, 8vw, 6rem) 2rem;
+  padding: clamp(2rem, 6vw, 4rem) 2rem;
   text-align: center;
   position: relative;
   overflow: hidden;
   margin: 2rem 1rem 2rem 1rem;
   box-shadow: var(--shadow-purple-lg);
+  /* Remove the min-height: 100vh that was making it too big */
 }
 
 .hero-subtitle {
@@ -883,8 +884,8 @@ footer:hover::before {
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero {
-    padding: 2rem 1rem;
-    margin: 1.5rem 0.5rem 2rem 0.5rem;
+    padding: 1.5rem 1rem;
+    margin: 1rem 0.5rem 1.5rem 0.5rem;
   }
 
   .card-body {
@@ -916,8 +917,8 @@ footer:hover::before {
 
 @media (max-width: 480px) {
   .hero {
-    padding: 1.5rem 1rem;
-    margin: 1rem 0.25rem 2rem 0.25rem;
+    padding: 1rem 1rem;
+    margin: 0.5rem 0.25rem 1.5rem 0.25rem;
   }
 
   .card-body {

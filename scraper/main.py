@@ -62,11 +62,15 @@ def main():
                 current_chapter += 1
                 continue
             
-            # Create safe filename
-            #safe_title = sanitize_filename(title)
-
-            # Save text file
-            text_filename = f"Chapter {downloaded_count}..txt"
+            # Create safe filename using chapter title with numeric prefix for proper sorting
+            safe_title = sanitize_filename(title)
+            
+            # Create filename - if title is generic/empty, use only the number; otherwise include title
+            if safe_title:
+                text_filename = f"{downloaded_count}_{safe_title}.txt"
+            else:
+                text_filename = f"{downloaded_count}.txt"
+                
             downloaded_count += 1
             text_path = os.path.join("chapters/text", text_filename)
             
