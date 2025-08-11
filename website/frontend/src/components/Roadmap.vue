@@ -20,7 +20,7 @@
               <i class="fas fa-headphones"></i>
             </div>
             <div class="feature-content">
-              <h3>Audio Book Reader</h3>
+              <h3>Audio Book Player</h3>
               <p>
                 Listen to chapters with high-quality text-to-speech narration.
                 Perfect for hands-free reading during commutes or workouts.

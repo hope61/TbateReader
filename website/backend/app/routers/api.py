@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models
 from app.limiter import limiter
+from app.utils import get_chapters_from_filesystem, get_chapter_content
 import os
 import socket
 
@@ -80,16 +81,18 @@ def get_novel_chapters(
     db: Session = Depends(get_db)
 ):
     """List all chapters for a specific novel."""
+    # Get novel from database to verify it exists
     novel = db.query(models.Novel).filter(models.Novel.id == novel_id).first()
     if not novel:
         raise HTTPException(status_code=404, detail="Novel not found")
-    chapters = db.query(models.Chapter).filter(
-        models.Chapter.novel_id == novel_id
-    ).order_by(models.Chapter.number).all()
-    return [
-        {"id": chapter.id, "title": chapter.title, "number": chapter.number}
-        for chapter in chapters
-    ]
+    
+    # Construct path to novel's chapter directory
+    novel_directory = f"/app/novels/{novel.title}"
+    
+    # Get chapters from filesystem
+    chapters = get_chapters_from_filesystem(novel_directory)
+    
+    return chapters
 
 @router.get("/novels/{novel_id}/chapters/{chapter_number}")
 # @limiter.limit("100/minute")
@@ -100,10 +103,18 @@ def get_chapter(
     db: Session = Depends(get_db)
 ):
     """Get a specific chapter of a novel."""
-    chapter = db.query(models.Chapter).filter(
-        models.Chapter.novel_id == novel_id,
-        models.Chapter.number == chapter_number
-    ).first()
-    if not chapter:
+    # Get novel from database to verify it exists
+    novel = db.query(models.Novel).filter(models.Novel.id == novel_id).first()
+    if not novel:
+        raise HTTPException(status_code=404, detail="Novel not found")
+    
+    # Construct path to novel's chapter directory
+    novel_directory = f"/app/novels/{novel.title}"
+    
+    # Get chapter content from filesystem
+    chapter_data = get_chapter_content(novel_directory, chapter_number)
+    
+    if not chapter_data:
         raise HTTPException(status_code=404, detail="Chapter not found")
-    return {"title": chapter.title, "content": chapter.content}
+    
+    return chapter_data

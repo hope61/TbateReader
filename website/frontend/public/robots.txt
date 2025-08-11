@@ -15,8 +15,9 @@ Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
 Disallow: /*.json$
-Disallow: /*.xml$ 
+# Allow sitemaps
 Allow: /sitemap.xml
+Allow: /sitemaps/
 
 # Crawl delay (optional - removes this if you want faster crawling)
 # Crawl-delay: 1
