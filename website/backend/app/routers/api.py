@@ -87,7 +87,11 @@ def get_novel_chapters(
         raise HTTPException(status_code=404, detail="Novel not found")
     
     # Construct path to novel's chapter directory
-    novel_directory = f"/app/novels/{novel.title}"
+    # Use relative path when running locally, absolute path in Docker
+    if os.path.exists(f"./novels/{novel.title}"):
+        novel_directory = f"./novels/{novel.title}"
+    else:
+        novel_directory = f"/app/novels/{novel.title}"
     
     # Get chapters from filesystem
     chapters = get_chapters_from_filesystem(novel_directory)
@@ -109,7 +113,11 @@ def get_chapter(
         raise HTTPException(status_code=404, detail="Novel not found")
     
     # Construct path to novel's chapter directory
-    novel_directory = f"/app/novels/{novel.title}"
+    # Use relative path when running locally, absolute path in Docker
+    if os.path.exists(f"./novels/{novel.title}"):
+        novel_directory = f"./novels/{novel.title}"
+    else:
+        novel_directory = f"/app/novels/{novel.title}"
     
     # Get chapter content from filesystem
     chapter_data = get_chapter_content(novel_directory, chapter_number)

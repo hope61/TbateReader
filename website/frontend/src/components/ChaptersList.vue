@@ -26,6 +26,125 @@
       </router-link>
     </div>
 
+    <!-- Top Navigation -->
+    <div class="top-navigation mb-4">
+      <!-- Desktop top navigation -->
+      <div
+        class="d-none d-md-flex justify-content-center align-items-center"
+        role="navigation"
+        aria-label="Top chapter pagination"
+      >
+        <button
+          class="btn btn-secondary me-2"
+          :disabled="currentPage === 1"
+          @click="goToPage(1)"
+          aria-label="Go to first page"
+        >
+          <i class="fas fa-angle-double-left me-1"></i>First
+        </button>
+        <button
+          class="btn btn-secondary me-2"
+          :disabled="currentPage === 1"
+          @click="goToPage(currentPage - 1)"
+          aria-label="Previous page"
+        >
+          <i class="fas fa-angle-left me-1"></i>Previous
+        </button>
+        <span class="align-self-center mx-3" aria-live="polite">
+          <strong>Page {{ currentPage }} of {{ totalPages }}</strong>
+        </span>
+        <select
+          v-model.number="currentPage"
+          @change="goToPage(currentPage)"
+          class="form-select mx-2"
+          style="width: 100px"
+          aria-label="Jump to page"
+        >
+          <option v-for="page in totalPages" :key="page" :value="page">
+            {{ page }}
+          </option>
+        </select>
+        <button
+          class="btn btn-secondary ms-2"
+          :disabled="currentPage === totalPages"
+          @click="goToPage(currentPage + 1)"
+          aria-label="Next page"
+        >
+          Next<i class="fas fa-angle-right ms-1"></i>
+        </button>
+        <button
+          class="btn btn-secondary ms-2"
+          :disabled="currentPage === totalPages"
+          @click="goToPage(totalPages)"
+          aria-label="Go to last page"
+        >
+          Last<i class="fas fa-angle-double-right ms-1"></i>
+        </button>
+      </div>
+
+      <!-- Mobile top navigation -->
+      <div class="d-md-none">
+        <div class="row justify-content-center mb-3">
+          <div class="col-6">
+            <button
+              class="btn btn-secondary w-100"
+              :disabled="currentPage === 1"
+              @click="goToPage(currentPage - 1)"
+              aria-label="Previous page"
+            >
+              <i class="fas fa-angle-left me-1"></i>Previous
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              class="btn btn-secondary w-100"
+              :disabled="currentPage === totalPages"
+              @click="goToPage(currentPage + 1)"
+              aria-label="Next page"
+            >
+              Next<i class="fas fa-angle-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+          <div class="col-8">
+            <select
+              v-model.number="currentPage"
+              @change="goToPage(currentPage)"
+              class="form-select text-center"
+              aria-label="Jump to page"
+            >
+              <option v-for="page in totalPages" :key="page" :value="page">
+                Page {{ page }} of {{ totalPages }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-6">
+            <button
+              class="btn btn-outline-secondary w-100"
+              :disabled="currentPage === 1"
+              @click="goToPage(1)"
+              aria-label="Go to first page"
+            >
+              <i class="fas fa-angle-double-left me-1"></i>First
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              class="btn btn-outline-secondary w-100"
+              :disabled="currentPage === totalPages"
+              @click="goToPage(totalPages)"
+              aria-label="Go to last page"
+            >
+              Last<i class="fas fa-angle-double-right ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row g-3">
       <div
         class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3"
@@ -211,6 +330,26 @@ export default {
   },
   mounted() {
     this.fetchChapters();
+    // Check if there's a page parameter in the URL
+    const pageParam = this.$route.query.page;
+    if (pageParam) {
+      this.currentPage = parseInt(pageParam);
+    } else {
+      // If no page parameter, try to restore from localStorage
+      this.restorePageFromStorage();
+    }
+  },
+  watch: {
+    currentPage(newPage) {
+      // Save the current page to localStorage whenever it changes
+      const key = `novel_${this.novelId}_page`;
+      localStorage.setItem(key, newPage.toString());
+    },
+  },
+  beforeUnmount() {
+    // Clear the saved page when leaving the component
+    const key = `novel_${this.novelId}_page`;
+    localStorage.removeItem(key);
   },
   methods: {
     async fetchChapters() {
@@ -233,6 +372,19 @@ export default {
     goToPage(page) {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page;
+        // Save the current page to localStorage
+        const key = `novel_${this.novelId}_page`;
+        localStorage.setItem(key, page.toString());
+      }
+    },
+    restorePageFromStorage() {
+      const key = `novel_${this.novelId}_page`;
+      const savedPage = localStorage.getItem(key);
+      if (savedPage) {
+        const page = parseInt(savedPage);
+        if (page >= 1) {
+          this.currentPage = page;
+        }
       }
     },
   },
@@ -506,6 +658,62 @@ export default {
     width: 40px;
     height: 40px;
     font-size: 1rem;
+  }
+
+  .top-navigation {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  .top-navigation .btn {
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .top-navigation .btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .top-navigation .form-select {
+    border-color: var(--border-accent);
+    background-color: var(--surface);
+    color: var(--text-primary);
+  }
+
+  .top-navigation .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+  }
+
+  /* Responsive adjustments for top navigation */
+  @media (max-width: 768px) {
+    .top-navigation {
+      padding: 1rem;
+    }
+
+    .top-navigation .btn {
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    .top-navigation .form-select {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .top-navigation {
+      padding: 0.75rem;
+    }
+
+    .top-navigation .btn {
+      font-size: 0.8125rem;
+      padding: 0.375rem 0.5rem;
+    }
   }
 
   .pagination-container {

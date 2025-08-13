@@ -50,9 +50,10 @@
           <div class="notice-text">
             <h3>🎧 Audiobooks Wanted!</h3>
             <p>
-              We're actively searching for audiobooks for our available novels! 
-              If you have access to official or high-quality audiobooks for any of these series, 
-              please join our <strong>Discord server</strong> and message us about it.
+              We're actively searching for audiobooks for our available novels!
+              If you have access to official or high-quality audiobooks for any
+              of these series, please join our
+              <strong>Discord server</strong> and message us about it.
             </p>
             <div class="novels-wanted">
               <div class="wanted-novel">
@@ -75,8 +76,8 @@
             <div class="notice-highlight">
               <span class="highlight-icon">🤖</span>
               <span class="highlight-text">
-                <strong>Currently Available:</strong> AI-generated TBATE Volume 12
-                audiobook (unreleased chapters)
+                <strong>Currently Available:</strong> AI-generated TBATE Volume
+                12 audiobook (unreleased chapters)
               </span>
             </div>
             <div class="discord-cta">
@@ -87,9 +88,7 @@
                 <i class="fab fa-discord"></i>
                 Join Our Discord
               </a>
-              <span class="discord-note"
-                >Message us about any audiobooks!</span
-              >
+              <span class="discord-note">Message us about any audiobooks!</span>
             </div>
           </div>
         </div>
