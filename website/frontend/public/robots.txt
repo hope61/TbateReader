@@ -15,9 +15,17 @@ Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
 Disallow: /*.json$
+
 # Allow sitemaps
 Allow: /sitemap.xml
 Allow: /sitemaps/
 
+# Additional directives for better crawling
+Allow: /images/
+Allow: /assets/
+
 # Crawl delay (optional - removes this if you want faster crawling)
 # Crawl-delay: 1
+
+# Host directive to help with canonical URLs
+Host: https://mana.dicki.org

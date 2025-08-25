@@ -15,6 +15,10 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# Ensure robots.txt and sitemap.xml are in the dist folder
+RUN cp public/robots.txt dist/ 2>/dev/null || true
+RUN cp public/sitemap.xml dist/ 2>/dev/null || true
+
 # Production stage
 FROM nginx:alpine
 

@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "cp public/robots.txt dist/ && cp public/sitemap.xml dist/",
+    "verify": "node verify_seo_files.js",
     "preview": "vite preview"
   },
   "dependencies": {

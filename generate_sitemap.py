@@ -51,10 +51,12 @@ def write_xml(elem: ET.Element, path: str):
         tree.write(f, encoding="utf-8", xml_declaration=True)
 
 
-def add_url(urlset: ET.Element, loc: str, lastmod: str):
+def add_url(urlset: ET.Element, loc: str, lastmod: str, priority: str = "0.8", changefreq: str = "weekly"):
     url = ET.SubElement(urlset, "url")
     ET.SubElement(url, "loc").text = loc
     ET.SubElement(url, "lastmod").text = lastmod
+    ET.SubElement(url, "priority").text = priority
+    ET.SubElement(url, "changefreq").text = changefreq
 
 
 def create_consolidated_sitemap():
@@ -64,16 +66,16 @@ def create_consolidated_sitemap():
     # Create single urlset for all URLs
     urlset = new_urlset()
 
-    # Add static pages
+    # Add static pages with high priority
     static_urls = [
-        (f"{BASE_URL}/", today),
-        (f"{BASE_URL}/contact", today),
+        (f"{BASE_URL}/", today, "1.0", "daily"),
+        (f"{BASE_URL}/contact", today, "0.6", "monthly"),
     ]
     
-    for loc, lastmod in static_urls:
-        add_url(urlset, loc, lastmod)
+    for loc, lastmod, priority, changefreq in static_urls:
+        add_url(urlset, loc, lastmod, priority, changefreq)
 
-    # Fetch novels and add only novel list pages (not individual chapters)
+    # Fetch novels and add novel list pages
     try:
         resp = requests.get(f"{API_URL}/novels", timeout=30)
         resp.raise_for_status()
@@ -82,12 +84,21 @@ def create_consolidated_sitemap():
         for novel in novels:
             novel_id = novel["id"]
             
-            # Only add novel list pages - skip individual chapter pages
+            # Add novel list pages with medium priority
             novel_url = f"{BASE_URL}/novels/{novel_id}"
-            add_url(urlset, novel_url, today)
+            add_url(urlset, novel_url, today, "0.8", "weekly")
                 
     except Exception as e:
         print(f"Error fetching data from API: {e}")
+        # Fallback: add known novels if API fails
+        fallback_novels = [
+            (f"{BASE_URL}/novels/1", today, "0.8", "weekly"),
+            (f"{BASE_URL}/novels/2", today, "0.8", "weekly"),
+            (f"{BASE_URL}/novels/3", today, "0.8", "weekly"),
+            (f"{BASE_URL}/novels/4", today, "0.8", "weekly"),
+        ]
+        for loc, lastmod, priority, changefreq in fallback_novels:
+            add_url(urlset, loc, lastmod, priority, changefreq)
 
     # Check if we exceed the single sitemap limit
     total_urls = len(urlset.findall("url"))
@@ -99,6 +110,15 @@ def create_consolidated_sitemap():
     write_xml(urlset, INDEX_PATH)
     print(f"Wrote consolidated sitemap: {INDEX_PATH}")
     print(f"Total URLs: {total_urls}")
+    
+    # Also write a copy to dist folder for immediate use
+    dist_path = os.path.join("website/frontend/dist", "sitemap.xml")
+    try:
+        os.makedirs(os.path.dirname(dist_path), exist_ok=True)
+        write_xml(urlset, dist_path)
+        print(f"Also wrote sitemap to: {dist_path}")
+    except Exception as e:
+        print(f"Could not write to dist folder: {e}")
 
 
 if __name__ == "__main__":
