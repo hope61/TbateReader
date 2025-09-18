@@ -52,8 +52,8 @@ if os.getenv("ENVIRONMENT", "development") == "production":
     app.add_middleware(
         TrustedHostMiddleware,
         allowed_hosts=[
-            "manaapi.dicki.org",
-            "mana.dicki.org",
+            "tbateapi.dicki.org",
+            "tbate.dicki.org",
             "*.dicki.org",
             "localhost",
             "127.0.0.1",

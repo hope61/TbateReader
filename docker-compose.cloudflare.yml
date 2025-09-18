@@ -9,7 +9,7 @@ services:
       - backend
     environment:
       - NODE_ENV=production
-      - VITE_API_BASE_URL=https://manaapi.dicki.org
+      - VITE_API_BASE_URL=https://tbateapi.dicki.org
     networks:
       - tbate-network
     restart: unless-stopped
@@ -39,9 +39,9 @@ services:
       - ./website/backend/images:/app/images:ro
     environment:
       - ENVIRONMENT=production
-      - CORS_ORIGINS=https://mana.dicki.org,https://www.mana.dicki.org,http://localhost:3001,http://172.30.0.1:3001
+      - CORS_ORIGINS=https://tbate.dicki.org,https://www.tbate.dicki.org,http://localhost:3001,http://172.30.0.1:3001
       - ENABLE_DOCS=true
-      - DOMAIN=manaapi.dicki.org
+      - DOMAIN=tbateapi.dicki.org
     networks:
       - tbate-network
     restart: unless-stopped

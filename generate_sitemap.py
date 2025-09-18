@@ -8,8 +8,8 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 # Configuration
-BASE_URL = "https://mana.dicki.org"
-API_URL = "https://manaapi.dicki.org"
+BASE_URL = "https://tbate.dicki.org"
+API_URL = "https://tbateapi.dicki.org"
 OUTPUT_DIR = "website/frontend/public"
 INDEX_PATH = os.path.join(OUTPUT_DIR, "sitemap.xml")
 
