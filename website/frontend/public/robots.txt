@@ -28,4 +28,4 @@ Allow: /assets/
 # Crawl-delay: 1
 
 # Host directive to help with canonical URLs
-Host: https://mana.dicki.org
+Host: https://tbate.dicki.org
