@@ -40,7 +40,7 @@ def get_base_url(request: Request):
     """Get base URL for image URLs."""
     # Prefer explicit API domain in production
     if os.getenv("ENVIRONMENT", "development") == "production":
-        return "https://manaapi.dicki.org"
+        return "https://tbateapi.dicki.org"
     # Fall back to request base URL in dev
     return str(request.base_url).rstrip("/")
 
