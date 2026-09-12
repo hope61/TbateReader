@@ -16,10 +16,6 @@ A web application for reading novels with a clean, modern interface.
 - **Database**: SQLite
 - **Deployment**: Docker, Nginx
 
-## Demo
-
-🌐 **Live Demo**: [https://tbate.dicki.org/](https://tbate.dicki.org/)
-
 ## Quick Start
 
 1. Clone the repository
